@@ -32,7 +32,6 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'mlapp',
-    'django_bootstrap5',
 
     'django.contrib.admin',
     'django.contrib.auth',
