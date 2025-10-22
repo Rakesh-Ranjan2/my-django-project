@@ -8,5 +8,4 @@ install pip ------> open vs code and install python extension ------> run comman
 
 run pip install -r requirements.txt
 
-
-
+run python manage.py runserver
