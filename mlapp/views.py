@@ -3,7 +3,7 @@ from tensorflow.keras.models import load_model # type: ignore
 import numpy as np
 from PIL import Image
 
-from mlapp.models import PlantImage
+
 
 
 # Load model once when server starts
