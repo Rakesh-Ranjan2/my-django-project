@@ -3,50 +3,53 @@ from tensorflow.keras.models import load_model # type: ignore
 import numpy as np
 from PIL import Image
 
+from mlapp.models import PlantImage
+
 
 # Load model once when server starts
 model = load_model('mlapp/prototype1.h5')
 
 class_names  = [
-    "Apple___Apple_scab",
-    "Apple___Black_rot",
-    "Apple___Cedar_apple_rust",
-    "Apple___healthy",
-    "Blueberry___healthy",
-    "Cherry_(including_sour)___Powdery_mildew",
-    "Cherry_(including_sour)___healthy",
-    "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot",
-    "Corn_(maize)___Common_rust_",
-    "Corn_(maize)___Northern_Leaf_Blight",
-    "Corn_(maize)___healthy",
-    "Grape___Black_rot",
-    "Grape___Esca_(Black_Measles)",
-    "Grape___Leaf_blight_(Isariopsis_Leaf_Spot)",
-    "Grape___healthy",
-    "Orange___Haunglongbing_(Citrus_greening)",
-    "Peach___Bacterial_spot",
-    "Peach___healthy",
-    "Pepper,_bell___Bacterial_spot",
-    "Pepper,_bell___healthy",
-    "Potato___Early_blight",
-    "Potato___Late_blight",
-    "Potato___healthy",
-    "Raspberry___healthy",
-    "Soybean___healthy",
-    "Squash___Powdery_mildew",
-    "Strawberry___Leaf_scorch",
-    "Strawberry___healthy",
-    "Tomato___Bacterial_spot",
-    "Tomato___Early_blight",
-    "Tomato___Late_blight",
-    "Tomato___Leaf_Mold",
-    "Tomato___Septoria_leaf_spot",
-    "Tomato___Spider_mites Two-spotted_spider_mite",
-    "Tomato___Target_Spot",
-    "Tomato___Tomato_Yellow_Leaf_Curl_Virus",
-    "Tomato___Tomato_mosaic_virus",
-    "Tomato___healthy"
+  'Apple ➔  Apple scab',
+  'Apple ➔  Black rot',
+  'Apple ➔  Cedar apple rust',
+  'Apple ➔  healthy',
+  'Blueberry ➔  healthy',
+  'Cherry ➔ Powdery mildew',
+  'Cherry (including sour) ➔ healthy',
+  'Corn (maize) ➔  Cercospora leaf spot Gray leaf spot',
+  'Corn (maize) ➔  Common rust ',
+  'Corn (maize) ➔  Northern Leaf Blight',
+  'Corn (maize) ➔  healthy',
+  'Grape ➔  Black rot',
+  'Grape ➔  Esca (Black Measles)',
+  'Grape ➔  Leaf blight (Isariopsis Leaf Spot)',
+  'Grape ➔  healthy',
+  'Orange ➔  Haunglongbing (Citrus greening)',
+  'Peach ➔  Bacterial spot',
+  'Peach ➔  healthy',
+  'Bell Pepper ➔ Bacterial spot',
+  'Bell Pepper ➔ healthy',
+  'Potato ➔ Early blight',
+  'Potato ➔ Late blight',
+  'Potato ➔ healthy',
+  'Raspberry ➔ healthy',
+  'Soybean ➔ healthy',
+  'Squash ➔ Powdery mildew',
+  'Strawberry ➔ Leaf scorch',
+  'Strawberry ➔ healthy',
+  'Tomato ➔ Bacterial spot',
+  'Tomato ➔ Early blight',
+  'Tomato ➔ Late blight',
+  'Tomato ➔ Leaf Mold',
+  'Tomato ➔ Septoria leaf spot',
+  'Tomato ➔ Spider mites Two-spotted spider mite',
+  'Tomato ➔ Target Spot',
+  'Tomato ➔ Tomato Yellow Leaf Curl Virus',
+  'Tomato ➔ Tomato mosaic virus',
+  'Tomato ➔ healthy'
 ]
+
 
 def home_view(request):
     prediction = None
@@ -54,6 +57,7 @@ def home_view(request):
 
     if request.method == 'POST' and request.FILES.get('img'):
         img_file = request.FILES['img']
+        new_img = PlantImage.objects.create(image=img_file)
         img = Image.open(img_file).resize((224, 224))
         img_array = np.array(img) / 255.0
         img_array = np.expand_dims(img_array, axis=0)
@@ -62,6 +66,9 @@ def home_view(request):
         pred_index = np.argmax(result)
         prediction = class_names[pred_index]
         certainty =  round(float(result[0][pred_index]) * 100, 2) 
+        new_img.prediction = prediction
+        new_img.certainity = str(certainty) + '%'
+        new_img.save()
 
     return render(request, 'mlapp/home.html', {'result': prediction, 'accuracy': certainty})
 

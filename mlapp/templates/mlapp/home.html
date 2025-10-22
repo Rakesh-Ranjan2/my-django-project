@@ -4,19 +4,108 @@
 {% block title %}Plant Disease Predictor{% endblock %}
 
 {% block content %}
-<h1>Predict Plant Disease</h1>
-<p>Upload an image of your plant leaf to detect the disease:</p>
+<style>
+/* ---- Container ---- */
+.upload-container {
+    background-color: #f9f9f9;
+    padding: 25px;
+    border-radius: 10px;
+    max-width: 500px;
+    margin: 20px auto;
+    text-align: center;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+}
 
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <input type="file" name="plant_image" required>
-    <button type="submit">Predict</button>
-</form>
+/* ---- Custom file input ---- */
+input[type="file"] {
+    display: none; /* hide default file input */
+}
 
-{% if prediction %}
-    <h2>Prediction: {{ prediction }}</h2>
-    {% if accuracy %}
-        <h2>Accuracy: {{ accuracy }}</h2>
+.custom-file-upload {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #27ae60;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.custom-file-upload:hover {
+    background-color: #219150;
+}
+
+/* ---- File name display ---- */
+#file-name {
+    display: block;
+    margin-top: 10px;
+    font-style: italic;
+    color: #555;
+}
+
+/* ---- Submit button ---- */
+button {
+    margin-top: 20px;
+    padding: 10px 25px;
+    background-color: #2980b9;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #2471a3;
+}
+
+/* ---- Prediction display ---- */
+.prediction-result {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #ecf0f1;
+    border-radius: 5px;
+    font-weight: bold;
+}
+</style>
+
+<div class="upload-container">
+    <h1>Predict Plant Disease</h1>
+    <p>Upload an image of your plant leaf to detect the disease:</p>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label for="plant_image" class="custom-file-upload">Choose File</label>
+        <input type="file" id="plant_image" name="img">
+        <span id="file-name">No file chosen</span>
+
+        <br>
+        <button type="submit">Predict</button>
+    </form>
+
+    {% if result %}
+        <div class="prediction-result">
+            <p>Prediction: {{ result }}</p>
+            {% if accuracy %}
+                <p>Certainity: {{ accuracy }}%</p>
+            {% endif %}
+        </div>
     {% endif %}
-{% endif %}
+</div>
+
+<script>
+// Show selected file name
+const fileInput = document.getElementById('plant_image');
+const fileName = document.getElementById('file-name');
+
+fileInput.addEventListener('change', () => {
+    if (fileInput.files.length > 0) {
+        fileName.textContent = fileInput.files[0].name;
+    } else {
+        fileName.textContent = 'No file chosen';
+    }
+});
+</script>
 {% endblock %}

@@ -1,3 +1,6 @@
 from django.contrib import admin
+from .models import PlantImage
 
-# Register your models here.
+@admin.register(PlantImage)
+class PlantImageAdmin(admin.ModelAdmin):
+    list_display = ('id', 'image', 'prediction', 'certainity', 'uploaded_at')
