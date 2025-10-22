@@ -1,0 +1,22 @@
+{% extends 'mlapp/base.html' %}
+{% load static %}
+
+{% block title %}Plant Disease Predictor{% endblock %}
+
+{% block content %}
+<h1>Predict Plant Disease</h1>
+<p>Upload an image of your plant leaf to detect the disease:</p>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="file" name="plant_image" required>
+    <button type="submit">Predict</button>
+</form>
+
+{% if prediction %}
+    <h2>Prediction: {{ prediction }}</h2>
+    {% if accuracy %}
+        <h2>Accuracy: {{ accuracy }}</h2>
+    {% endif %}
+{% endif %}
+{% endblock %}

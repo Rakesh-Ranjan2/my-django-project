@@ -48,7 +48,7 @@ class_names  = [
     "Tomato___healthy"
 ]
 
-def predict_view(request):
+def home_view(request):
     prediction = None
     certainty = None
 
@@ -63,5 +63,12 @@ def predict_view(request):
         prediction = class_names[pred_index]
         certainty =  round(float(result[0][pred_index]) * 100, 2) 
 
-    return render(request, 'mlapp/predict.html', {'result': prediction, 'accuracy': certainty})
+    return render(request, 'mlapp/home.html', {'result': prediction, 'accuracy': certainty})
 
+# About Us page
+def about_us_view(request):
+    return render(request, 'mlapp/about_us.html')
+
+# About Project page
+def about_project_view(request):
+    return render(request, 'mlapp/about_project.html')
