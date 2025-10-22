@@ -57,7 +57,6 @@ def home_view(request):
 
     if request.method == 'POST' and request.FILES.get('img'):
         img_file = request.FILES['img']
-        new_img = PlantImage.objects.create(image=img_file)
         img = Image.open(img_file).resize((224, 224))
         img_array = np.array(img) / 255.0
         img_array = np.expand_dims(img_array, axis=0)
@@ -66,9 +65,6 @@ def home_view(request):
         pred_index = np.argmax(result)
         prediction = class_names[pred_index]
         certainty =  round(float(result[0][pred_index]) * 100, 2) 
-        new_img.prediction = prediction
-        new_img.certainity = str(certainty) + '%'
-        new_img.save()
 
     return render(request, 'mlapp/home.html', {'result': prediction, 'accuracy': certainty})
 
